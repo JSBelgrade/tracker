@@ -6,7 +6,19 @@ const koa     = require('koa')
     , config  = require('./config.json')
     , app     = koa()
 
+// Options:
+// Getting them from an API or config file
+let port         = process.env.PORT || config.server.port
+  , clientID     = process.env.FS_CLIENT_ID || config.foursquare.clientID
+  , clientSecret = process.env.FS_CLIENT_SECRET || config.foursquare.clientSecret
+  , baseUrl      = process.env.BASE_URL || config.server.baseUrl
+  , callbackUrl  = encodeURIComponent(`${baseUrl}/callbacl`)
+
+// Pages:
+
+// Home page
 let home = function * () {
+  // Just print a static content
   this.body =
 `JS Belgrade Tracker
 
@@ -31,39 +43,48 @@ Useful links*:
 * Yes, links are not clickable. To fix that visit #5 and send PR.`
 }
 
-let connect = function * (next) {
-  yield next
-
+// Connect
+let connect = function * () {
+  // Generate Foursquare auth url
   let url = 'https://foursquare.com/oauth2/authenticate'
-          + '?client_id=' + config.foursquare.clientID
+          + '?client_id=' + clientID
           + '&response_type=code'
-          + '&redirect_uri='
-          + encodeURIComponent(config.server.baseUrl + '/callback')
+          + '&redirect_uri=' + callbackUrl
 
+  // Set status 302 and redirect user
   this.status = 302
   this.redirect(url)
-  this.body = 'Redirecting to foursquare'
+  this.body = 'Redirecting to Foursquare'
 }
 
-let connectCallback = function * (next) {
-
+// Connect callback page
+let connectCallback = function * () {
+  // Parse query string
+  // todo: do this better
   let query = this.request.querystring.split('=')
 
+  // Generate Forsquare access token url
   let url = 'https://foursquare.com/oauth2/access_token'
-          + '?client_id=' + config.foursquare.clientID
-          + '&client_secret=' + config.foursquare.clientSecret
+          + '?client_id=' + clientID
+          + '&client_secret=' + clientSecret
           + '&grant_type=authorization_code'
-          + '&redirect_uri='
-          + encodeURIComponent(config.server.baseUrl + '/callback')
+          + '&redirect_uri=' + callbackUrl
           + '&code=' + query[1]
 
+  // Send request
   let response = yield request({url: url})
-    
+  
+  // Parse response
   let info = JSON.parse(response.body)
 
-  this.body = info.access_token
+  // And print the response
+  this.body =
+`You are successfully connected.
+
+Your access token is ${info.access_token}.`
 }
 
+// Push page
 let fsPush = function * () {
   this.body = 'Tracker connect callback'
 }
@@ -83,5 +104,5 @@ app.use(router.get('/callback', connectCallback))
 app.use(router.post('/push', fsPush))
 
 // Create server
-app.listen(config.server.port)
-console.log('listening on port 3000')
+app.listen(port)
+console.log(`listening on port ${port}`)
