@@ -19,7 +19,7 @@ let port         = process.env.PORT || config.server.port
   , clientID     = process.env.FS_CLIENT_ID || config.foursquare.clientID
   , clientSecret = process.env.FS_CLIENT_SECRET || config.foursquare.clientSecret
   , baseUrl      = process.env.BASE_URL || config.server.baseUrl
-  , callbackUrl  = encodeURIComponent(`${baseUrl}/callbacl`)
+  , callbackUrl  = encodeURIComponent(`${baseUrl}/callback`)
 
 // Pages:
 
