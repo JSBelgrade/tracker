@@ -97,7 +97,7 @@ let connectCallback = function * () {
 
 Your access token is ${info.access_token}.
 
-${userInfo}`
+${JSON.stringify(userInfo)}`
 }
 
 // Push page
