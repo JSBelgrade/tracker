@@ -98,7 +98,7 @@ let connectCallback = function * () {
   let version = new Date().toISOString().substr(0, 10).replace(/\-/g, '')
   let fsUserUrl = `${fsApiUrl}?oauth_token=${info.access_token}&v=${version}`
   let userInfoResponse = yield request({url: fsUserUrl})
-  let userInfo = JSON.parse(userInfoResponse)
+  let userInfo = JSON.parse(userInfoResponse.body)
 
   let user = userInfo.response.user.firstName
            + ' '
