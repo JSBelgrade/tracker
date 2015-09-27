@@ -49,7 +49,7 @@ Useful links*:
 2. Slack: http://slack.jsbelgrade.org
 3. Github: https://github.com/JSBelgrade
 4. Twitter: https://twitter.com/JSBelgrade
-5. Tracker source: https://twitter.com/JSBelgrade
+5. Tracker source: https://github.com/JSBelgrade/tracker
 
 * Yes, links are not clickable. To fix that visit #5 and send PR.`
 }
@@ -88,11 +88,16 @@ let connectCallback = function * () {
   // Parse response
   let info = JSON.parse(response.body)
 
+  // Get user info from Foursquare
+  let userInfo = yield request({url: 'https://api.foursquare.com/v2/users/self'})
+
   // And print the response
   this.body =
 `You are successfully connected.
 
-Your access token is ${info.access_token}.`
+Your access token is ${info.access_token}.
+
+${userInfo}`
 }
 
 // Push page
