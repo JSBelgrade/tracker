@@ -31,5 +31,8 @@
   "bugs": {
     "url": "https://github.com/JSBelgrade/tracker/issues"
   },
-  "homepage": "https://github.com/JSBelgrade/tracker"
+  "homepage": "https://github.com/JSBelgrade/tracker",
+  "engines": {
+    "node": "4.x"
+  }
 }

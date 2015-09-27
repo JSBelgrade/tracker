@@ -93,7 +93,7 @@ Your access token is ${info.access_token}.`
 
 // Push page
 let fsPush = function * () {
-  this.body = 'Tracker connect callback'
+  this.body = JSON.stringify(this)
 }
 
 // Routes
