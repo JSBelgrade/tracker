@@ -97,7 +97,8 @@ let connectCallback = function * () {
   let fsApiUrl = 'https://api.foursquare.com/v2/users/self'
   let version = new Date().toISOString().substr(0, 10).replace(/\-/g, '')
   let fsUserUrl = `${fsApiUrl}?oauth_token=${info.access_token}&v=${version}`
-  let userInfo = yield request({url: fsUserUrl})
+  let userInfoResponse = yield request({url: fsUserUrl})
+  let userInfo = JSON.parse(userInfoResponse)
 
   let user = userInfo.response.user.firstName
            + ' '
