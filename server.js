@@ -47,8 +47,6 @@ let connect = function * (next) {
 
 let connectCallback = function * (next) {
 
-  yield next
-
   let query = this.request.querystring.split('=')
 
   let url = 'https://foursquare.com/oauth2/access_token'
