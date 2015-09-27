@@ -1,9 +1,10 @@
 'use strict'
 
-const koa     = require('koa')
-    , router  = require('koa-route')
-    , request = require('koa-request')
-    , app     = koa()
+const koa        = require('koa')
+    , router     = require('koa-route')
+    , request    = require('koa-request')
+    , bodyParser = require('koa-body-parser')
+    , app        = koa()
 
   // Check if "config.json" exists
   try {
@@ -20,6 +21,9 @@ let port         = process.env.PORT || config.server.port
   , clientSecret = process.env.FS_CLIENT_SECRET || config.foursquare.clientSecret
   , baseUrl      = process.env.BASE_URL || config.server.baseUrl
   , callbackUrl  = encodeURIComponent(`${baseUrl}/callback`)
+
+// Middlewares
+app.use(bodyParser())
 
 // Pages:
 
@@ -93,7 +97,7 @@ Your access token is ${info.access_token}.`
 
 // Push page
 let fsPush = function * () {
-  this.body = JSON.stringify(this)
+  this.body = this.request.body
 }
 
 // Routes
