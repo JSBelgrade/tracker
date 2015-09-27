@@ -4,6 +4,7 @@ const koa        = require('koa')
     , router     = require('koa-route')
     , request    = require('koa-request')
     , bodyParser = require('koa-body-parser')
+    , Slack      = require('slack-client')
     , app        = koa()
 
   // Check if "config.json" exists
@@ -21,9 +22,13 @@ let port         = process.env.PORT || config.server.port
   , clientSecret = process.env.FS_CLIENT_SECRET || config.foursquare.clientSecret
   , baseUrl      = process.env.BASE_URL || config.server.baseUrl
   , callbackUrl  = encodeURIComponent(`${baseUrl}/callback`)
+  , slackToken   = process.env.SLACK_TOKEN || config.slack.token
 
 // Middlewares
 app.use(bodyParser())
+
+// Slack bot
+let slack = new Slack(slackToken, true, true)
 
 // Pages:
 
@@ -89,15 +94,25 @@ let connectCallback = function * () {
   let info = JSON.parse(response.body)
 
   // Get user info from Foursquare
-  let userInfo = yield request({url: 'https://api.foursquare.com/v2/users/self'})
+  let fsApiUrl = 'https://api.foursquare.com/v2/users/self'
+  let version = new Date().toISOString().substr(0, 10).replace(/\-/g, '')
+  let fsUserUrl = `${fsApiUrl}?oauth_token=${info.access_token}&v=${version}`
+  let userInfo = yield request({url: fsUserUrl})
+
+  let user = userInfo.response.user.firstName
+           + ' '
+           + userInfo.response.user.lastName
+
+  // Post message to Slack
+  let slackMessage = `${user} just joined!`
+  slack.getChannelByName('#tracker').send(slackMessage)
 
   // And print the response
   this.body =
-`You are successfully connected.
+`Hey, ${user},
+you are successfully connected to JS Belgrade tracker.
 
-Your access token is ${info.access_token}.
-
-${JSON.stringify(userInfo)}`
+Your access token is ${info.access_token}.`
 }
 
 // Push page
