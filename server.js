@@ -30,6 +30,8 @@ app.use(bodyParser())
 // Slack bot
 let slack = new Slack(slackToken, true, true)
 
+slack.login()
+
 // Pages:
 
 // Home page
@@ -106,7 +108,7 @@ let connectCallback = function * () {
 
   // Post message to Slack
   let slackMessage = `${user} just joined!`
-  slack.getChannelByName('tracker').send(slackMessage)
+  slack.getChannelByName('#tracker').send(slackMessage)
 
   // And print the response
   this.body =
