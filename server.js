@@ -3,8 +3,15 @@
 const koa     = require('koa')
     , router  = require('koa-route')
     , request = require('koa-request')
-    , config  = require('./config.json')
     , app     = koa()
+
+  // Check if "config.json" exists
+  try {
+    // And require it
+    var config = require('./config.json')
+  } catch (ex) {
+    // Or just hope that you have environment variables :D
+  }
 
 // Options:
 // Getting them from an API or config file
