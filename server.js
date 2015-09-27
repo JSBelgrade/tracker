@@ -106,7 +106,7 @@ let connectCallback = function * () {
 
   // Post message to Slack
   let slackMessage = `${user} just joined!`
-  slack.getChannelByName('#tracker').send(slackMessage)
+  slack.getChannelByName('tracker').send(slackMessage)
 
   // And print the response
   this.body =
