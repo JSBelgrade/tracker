@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" type="text/css" href="static/style.css">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="icons">
+      <div><img src="{{ orgIcon }}"></div>
+      <div><img src="static/swarm-icon.png"></div>
+      <div><img src="static/slack-icon.png"></div>
+    </div>
+    <p class="center">Connect your Foursquare acount with {{ orgName }} Slack and post checkins to {{ channel }} channel</p>
+    <a class="button" href="/connect">Connect with Swarm</a>
+    <p class="center">Usage: [TBA]</p>
+    <p class="center">Only checkins that contains following words will be posted: {{ words }}</p>
+  </div>
+</body>
+</html>

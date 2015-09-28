@@ -4,6 +4,8 @@ const koa        = require('koa')
     , router     = require('koa-route')
     , request    = require('koa-request')
     , bodyParser = require('koa-body-parser')
+    , views      = require('koa-views')
+    , serve      = require('koa-static-folder')
     , favicon    = require('koa-favicon')
     , Slack      = require('slack-client')
     , app        = koa()
@@ -18,20 +20,28 @@ const koa        = require('koa')
 
 // Options:
 // Getting them from an API or config file
-let port         = process.env.PORT || config.server.port
-  , clientID     = process.env.FS_CLIENT_ID || config.foursquare.clientID
-  , clientSecret = process.env.FS_CLIENT_SECRET || config.foursquare.clientSecret
-  , pushSecret   = process.env.FS_PUSH_SECRET || config.foursquare.pushSecret
-  , baseUrl      = process.env.BASE_URL || config.server.baseUrl
-  , triggerWords = process.env.WORDS || config.foursquare.triggerWords
-  , callbackUrl  = encodeURIComponent(`${baseUrl}/callback`)
-  , slackToken   = process.env.SLACK_TOKEN || config.slack.token
-  , slackChannel = process.env.SLACK_CHANNEL || config.slack.channel
+let port          = process.env.PORT || config.server.port
+  , clientID      = process.env.FS_CLIENT_ID || config.foursquare.clientID
+  , clientSecret  = process.env.FS_CLIENT_SECRET || config.foursquare.clientSecret
+  , pushSecret    = process.env.FS_PUSH_SECRET || config.foursquare.pushSecret
+  , baseUrl       = process.env.BASE_URL || config.server.baseUrl
+  , triggerWords  = process.env.WORDS || config.foursquare.triggerWords
+  , callbackUrl   = encodeURIComponent(`${baseUrl}/callback`)
+  , slackToken    = process.env.SLACK_TOKEN || config.slack.token
+  , slackApiToken = process.env.SLACK_API_TOKEN || config.slack.apiToken
+  , slackOrg      = process.env.SLACK_ORG || config.slack.orgName
+  , slackChannel  = process.env.SLACK_CHANNEL || config.slack.channel
 
 // Parse trigger words
 triggerWords = triggerWords.split(',')
 
 // Middlewares
+app.use(views('templates', {
+  map: {
+    html: 'mustache'
+  }
+}))
+app.use(serve('./static'))
 app.use(bodyParser())
 app.use(favicon(__dirname + '/static/favicon.ico'))
 
@@ -48,29 +58,18 @@ let getUserName = (first, last) => first ? `${first} ` : '' + last ? last : ''
 
 // Home page
 let home = function * () {
+
+  let response = yield request({url: `https://slack.com/api/team.info?token=${slackApiToken}`})
+
+  let options = {
+    orgIcon: JSON.parse(response.body).team.icon.image_132,
+    orgName: slackOrg,
+    channel: slackChannel,
+    words:   triggerWords.join(', ')
+  }
+
   // Just print a static content
-  this.body =
-`JS Belgrade Tracker
-
-Usage:
-
-- Go to "/connect" to signup
-- Checkin on Foursquare
-
-This service tracks all Foursqare checkins for authenticated users and posts
-them to JS Belgrade Slack in #tracker channel.
-Idea is to easily let the others know that you are somewhere and that they can
-join for a hacking or just a beer or coffee.
-
-Useful links*:
-
-1. JS Belgrade website: http://jsbelgrade.org
-2. Slack: http://slack.jsbelgrade.org
-3. Github: https://github.com/JSBelgrade
-4. Twitter: https://twitter.com/JSBelgrade
-5. Tracker source: https://github.com/JSBelgrade/tracker
-
-* Yes, links are not clickable. To fix that visit #5 and send PR.`
+  yield this.render('index', options)
 }
 
 // Connect
