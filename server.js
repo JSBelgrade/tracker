@@ -128,6 +128,12 @@ Your access token is ${info.access_token}.`
 
 // Push page
 let fsPush = function * () {
+  if (this.request.body.secret !== clientSecret) {
+    this.status = 403
+    this.body = '╭( ✖_✖ )╮'
+    return false
+  }
+
   // And parse it as JSON
   let checkin = JSON.parse(decodeURIComponent(this.request.body.checkin))
 
