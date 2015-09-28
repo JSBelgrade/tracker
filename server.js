@@ -26,6 +26,7 @@ let port         = process.env.PORT || config.server.port
   , slackToken   = process.env.SLACK_TOKEN || config.slack.token
   , slackChannel = process.env.SLACK_CHANNEL || config.slack.channel
 
+// Parse trigger words
 triggerWords = triggerWords.split(',')
 
 // Middlewares
@@ -35,6 +36,10 @@ app.use(bodyParser())
 let slack = new Slack(slackToken, true, true)
 
 slack.login()
+
+// Helpers
+
+let getUserName = (first, last) => first + ' ' + last
 
 // Pages:
 
@@ -106,9 +111,8 @@ let connectCallback = function * () {
   let userInfoResponse = yield request({url: fsUserUrl})
   let userInfo = JSON.parse(userInfoResponse.body)
 
-  let user = userInfo.response.user.firstName
-           + ' '
-           + userInfo.response.user.lastName
+  let usr = userInfo.response.user
+  let user = getUserName(usr.firstName, usr.lastName)
 
   // Post message to Slack
   let slackMessage = `${user} just joined!`
@@ -124,29 +128,38 @@ Your access token is ${info.access_token}.`
 
 // Push page
 let fsPush = function * () {
+  // Get raw checkin from request body
   let rawCheckin = this.request.body.split('&')[0]
-  let rawUser = this.request.body.split('&')[1]
-
+  // And parse it as JSON
   let checkin = JSON.parse(decodeURIComponent(rawCheckin.split('=')[1]))
 
-  let shouldIPostIt = false
+  // By default don't post anything to Slack
+  let postIt = false
 
+  // Than loop through all trigger words and check if they exists in checkin.shout
+  // If they do, just update `postIt` to true
   triggerWords.forEach(word => 
-    shouldIPostIt =
-      checkin.shout.toLowerCase().indexOf(word.toLowerCase()) >= 0 || shouldIPostIt)
+    postIt =
+      checkin.shout.toLowerCase().indexOf(word.toLowerCase()) >= 0 || postIt)
 
-  let message = `Nope :(`
-
-  if (shouldIPostIt) {
+  // Check if it should be posted
+  if (postIt) {
+    // Save some space in big message :)
     let venue = checkin.venue
-    // let url = venue.url + '/v/' + venue.storeId + '/' + venue.id + '/'
-    message = `*${checkin.user.firstName} ${checkin.user.lastName}* just checked in at *${venue.name}*, ${venue.location.formattedAddress.join(', ')}
+    let user = getUserName(checkin.user.firstName, checkin.user.lastName)
+    let address = venue.location.formattedAddress.join(', ')
+    
+    // Then generate the message
+    let message = `*${user}* just checked in at *${venue.name}*, ${address}
 > ${checkin.shout}`
+    
+    // And post it to the selected Slack channel
     slack.getChannelByName(slackChannel).send(message)
   }
 
+  // In the end just set status 200 and some message
   this.status = 200
-  this.body = message
+  this.body = `Thanks, Foursquare!`
 }
 
 // Routes
