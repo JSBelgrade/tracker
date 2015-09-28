@@ -137,8 +137,9 @@ let fsPush = function * () {
   // Than loop through all trigger words and check if they exists in checkin.shout
   // If they do, just update `postIt` to true
   triggerWords.forEach(word => 
-    postIt =
-      checkin.shout.toLowerCase().indexOf(word.toLowerCase()) >= 0 || postIt)
+    if (checkin.shout)
+      postIt =
+        checkin.shout.toLowerCase().indexOf(word.toLowerCase()) >= 0 || postIt)
 
   // Check if it should be posted
   if (postIt) {
