@@ -20,6 +20,7 @@ const koa        = require('koa')
 let port         = process.env.PORT || config.server.port
   , clientID     = process.env.FS_CLIENT_ID || config.foursquare.clientID
   , clientSecret = process.env.FS_CLIENT_SECRET || config.foursquare.clientSecret
+  , pushSecret   = process.env.FS_PUSH_SECRET || config.foursquare.pushSecret
   , baseUrl      = process.env.BASE_URL || config.server.baseUrl
   , triggerWords = process.env.WORDS || config.foursquare.triggerWords
   , callbackUrl  = encodeURIComponent(`${baseUrl}/callback`)
@@ -128,7 +129,7 @@ Your access token is ${info.access_token}.`
 
 // Push page
 let fsPush = function * () {
-  if (this.request.body.secret !== clientSecret) {
+  if (this.request.body.secret !== pushSecret) {
     this.status = 403
     this.body = '╭( ✖_✖ )╮'
     return false
