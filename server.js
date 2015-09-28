@@ -121,6 +121,7 @@ Your access token is ${info.access_token}.`
 
 // Push page
 let fsPush = function * () {
+  throw(this.request.body)
   this.body = this.request.body
 }
 
