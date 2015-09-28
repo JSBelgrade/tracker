@@ -4,6 +4,7 @@ const koa        = require('koa')
     , router     = require('koa-route')
     , request    = require('koa-request')
     , bodyParser = require('koa-body-parser')
+    , favicon    = require('koa-favicon')
     , Slack      = require('slack-client')
     , app        = koa()
 
@@ -32,6 +33,7 @@ triggerWords = triggerWords.split(',')
 
 // Middlewares
 app.use(bodyParser())
+app.use(favicon(__dirname + '/static/favicon.ico'))
 
 // Slack bot
 let slack = new Slack(slackToken, true, true)
