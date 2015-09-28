@@ -21,9 +21,12 @@ let port         = process.env.PORT || config.server.port
   , clientID     = process.env.FS_CLIENT_ID || config.foursquare.clientID
   , clientSecret = process.env.FS_CLIENT_SECRET || config.foursquare.clientSecret
   , baseUrl      = process.env.BASE_URL || config.server.baseUrl
+  , triggerWords = process.env.WORDS || config.foursquare.triggerWords
   , callbackUrl  = encodeURIComponent(`${baseUrl}/callback`)
   , slackToken   = process.env.SLACK_TOKEN || config.slack.token
   , slackChannel = process.env.SLACK_CHANNEL || config.slack.channel
+
+triggerWords = triggerWords.split(',')
 
 // Middlewares
 app.use(bodyParser())
@@ -121,7 +124,29 @@ Your access token is ${info.access_token}.`
 
 // Push page
 let fsPush = function * () {
-  this.body = this.request.body
+  let rawCheckin = this.request.body.split('&')[0]
+  let rawUser = this.request.body.split('&')[1]
+
+  let checkin = JSON.parse(decodeURIComponent(rawCheckin.split('=')[1]))
+
+  let shouldIPostIt = false
+
+  triggerWords.forEach(word => 
+    shouldIPostIt =
+      checkin.shout.toLowerCase().indexOf(word.toLowerCase()) >= 0 || shouldIPostIt)
+
+  let message = `Nope :(`
+
+  if (shouldIPostIt) {
+    let venue = checkin.venue
+    // let url = venue.url + '/v/' + venue.storeId + '/' + venue.id + '/'
+    message = `*${checkin.user.firstName} ${checkin.user.lastName}* just checked in at *${venue.name}*, ${venue.location.formattedAddress.join(', ')}
+> ${checkin.shout}`
+    slack.getChannelByName(slackChannel).send(message)
+  }
+
+  this.status = 200
+  this.body = message
 }
 
 // Routes
