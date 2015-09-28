@@ -128,10 +128,8 @@ Your access token is ${info.access_token}.`
 
 // Push page
 let fsPush = function * () {
-  // Get raw checkin from request body
-  let rawCheckin = this.request.body.split('&')[0]
   // And parse it as JSON
-  let checkin = JSON.parse(decodeURIComponent(rawCheckin.split('=')[1]))
+  let checkin = JSON.parse(decodeURIComponent(this.request.body.checkin))
 
   // By default don't post anything to Slack
   let postIt = false
