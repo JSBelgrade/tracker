@@ -23,6 +23,7 @@ let port         = process.env.PORT || config.server.port
   , baseUrl      = process.env.BASE_URL || config.server.baseUrl
   , callbackUrl  = encodeURIComponent(`${baseUrl}/callback`)
   , slackToken   = process.env.SLACK_TOKEN || config.slack.token
+  , slackChannel = process.env.SLACK_CHANNEL || config.slack.channel
 
 // Middlewares
 app.use(bodyParser())
@@ -108,7 +109,7 @@ let connectCallback = function * () {
 
   // Post message to Slack
   let slackMessage = `${user} just joined!`
-  slack.getChannelByName('#tracker').send(slackMessage)
+  slack.getChannelByName(slackChannel).send(slackMessage)
 
   // And print the response
   this.body =
