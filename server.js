@@ -39,7 +39,7 @@ slack.login()
 
 // Helpers
 
-let getUserName = (first, last) => first + ' ' + last
+let getUserName = (first, last) => first ? '${first} ' : '' + last ? last : ''
 
 // Pages:
 
