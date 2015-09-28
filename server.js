@@ -150,11 +150,11 @@ let fsPush = function * () {
     let address = venue.location.formattedAddress.join(', ')
     
     // Then generate the message
-    let message = `*${user}* just checked in at *${venue.name}*, ${address}
+    let slackMessage = `*${user}* just checked in at *${venue.name}*, ${address}
 > ${checkin.shout}`
     
     // And post it to the selected Slack channel
-    slack.getChannelByName(slackChannel).send(message)
+    slack.getChannelByName(slackChannel).send(slackMessage)
   }
 
   // In the end just set status 200 and some message
