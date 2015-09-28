@@ -25,6 +25,7 @@ let port         = process.env.PORT || config.server.port
   , callbackUrl  = encodeURIComponent(`${baseUrl}/callback`)
   , slackToken   = process.env.SLACK_TOKEN || config.slack.token
   , slackChannel = process.env.SLACK_CHANNEL || config.slack.channel
+  , pushSecret   = process.env.PUSH_SECRET || config.pushSecret
 
 // Parse trigger words
 triggerWords = triggerWords.split(',')
@@ -128,6 +129,11 @@ Your access token is ${info.access_token}.`
 
 // Push page
 let fsPush = function * () {
+  if (pushSecret != this.request.query.secret) {
+    this.status = 200;
+    this.body = 'nice try!';
+    return;
+  }
   // And parse it as JSON
   let checkin = JSON.parse(decodeURIComponent(this.request.body.checkin))
 
