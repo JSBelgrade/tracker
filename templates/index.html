@@ -14,8 +14,19 @@
     </div>
     <p class="center">Connect your Foursquare acount with {{ orgName }} Slack and post checkins to {{ channel }} channel</p>
     <a class="button" href="/connect">Connect with Swarm</a>
-    <p class="center">Usage: [TBA]</p>
-    <p class="center">Only checkins that contains following words will be posted: {{ words }}</p>
+    <!-- <p class="center">Only checkins that contains following words will be postedto Slack: {{ words }}</p> -->
+    <p class="center">Usage:
+      <ul>
+        <li>Connect with Foursquare/Swarm app account</li>
+        <li>Checkin and add at least one of the following words to the comment: {{ words }}</li>
+        <li>That's it, your checkin will be visible in {{ channel }} in {{ orgName }} Slack</li>
+      </ul>
+    </p>
+    <p class="center">Idea:</p>
+    <p class="center">If you are working from a coffee shop or just want to hang out and hack this Slack bot is an easy way to let the others from your Slack organization know where you are and someone might join you. This idea is based on <a href="https://twitter.com/denormalize">Max Ogden's</a> <a href="https://github.com/maxogden/nerdtracker">nerdtracker</a> IRC bot.</p>
+    <p class="center"><a href="https://github.com/JSBelgrade/tracker">Fork us on Github</a></p>
+    <p class="center"><a href="https://github.com/JSBelgrade/tracker/issues">Report an issue</a></p>
+    <p class="center"><a href="https://github.com/JSBelgrade/tracker/blob/master/INSTALL.md">Use it for your Slack organization</a></p>
   </div>
 </body>
 </html>

@@ -6,12 +6,12 @@ body {
 
 .wrapper {
   overflow: hidden;
-  margin: 70px auto;
+  margin: 90px auto 30px;
   width: 320px;
 }
 
 .icons {
-  margin: 80px auto;
+  margin: 60px auto;
   width: 292px;
   height: 64px;
 }
@@ -53,10 +53,19 @@ p.center {
   text-align: center;
 }
 
+a,
+a:visited {
+  color: #999;
+}
+
+a:hover {
+  color: #fda632;
+}
+
 a.button {
   display: block;
   overflow: hidden;
-  margin: 0 auto 80px;
+  margin: 0 auto 50px;
   padding-left: 60px;
   width: 190px;
   height: 44px;
@@ -72,4 +81,9 @@ a.button {
   font-size: 16px;
   text-align: left;
   text-decoration: none;
+}
+
+ul {
+  color: #999;
+  font-size: 13px;
 }
