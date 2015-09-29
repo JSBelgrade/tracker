@@ -1,0 +1,18 @@
+{
+  "foursquare": {
+    "clientID": "FOURSQUARE_CLIENT_ID",
+    "clientSecret": "FOURSQUARE_CLIENT_SECRET",
+    "pushSecret": "FOURSQUARE_PUSH_SECRET",
+    "triggerWords": "comma,separated,list"
+  },
+  "slack": {
+    "token": "slack-bot-token",
+    "channel": "#channel",
+    "orgName": "OrgName",
+    "apiToken": "slack-api-token"
+  },
+  "server": {
+    "port": 3000,
+    "baseUrl": "https://your.website.com"
+  }
+}
