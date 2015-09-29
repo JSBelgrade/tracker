@@ -6,12 +6,12 @@ body {
 
 .wrapper {
   overflow: hidden;
-  margin: 90px auto 30px;
+  margin: 70px auto 30px;
   width: 320px;
 }
 
 .icons {
-  margin: 60px auto;
+  margin: 80px auto;
   width: 292px;
   height: 64px;
 }
@@ -65,7 +65,7 @@ a:hover {
 a.button {
   display: block;
   overflow: hidden;
-  margin: 0 auto 50px;
+  margin: 0 auto 100px;
   padding-left: 60px;
   width: 190px;
   height: 44px;
